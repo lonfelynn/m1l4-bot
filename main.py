@@ -3,6 +3,9 @@ from discord.ext import commands
 import random
 import asyncio
 import youtube_dl
+import os
+print(os.listdir('images'))
+import requests
 
 intents = discord.Intents.default()
 intents.members = True
@@ -254,8 +257,87 @@ async def choose(ctx, *choices: str):
     await ctx.send(random.choice(choices))
 
 
+@bot.command()
+async def mem(ctx):
+    with open('images/mem1.jpg', 'rb') as f:
+        # В переменную кладем файл, который преобразуется в файл библиотеки Discord!
+        picture = discord.File(f)
+   # Можем передавать файл как параметр!
+    await ctx.send(file=picture)
+
+@bot.command()
+async def memes(ctx):
+    img_name = random.choice(os.listdir('images'))
+    with open(f'images/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+@bot.command()
+async def memes_kpop(ctx):
+    img_name = random.choice(os.listdir('kpop'))
+    with open(f'kpop/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+@bot.command()
+async def memes_anime(ctx):
+    img_name = random.choice(os.listdir('anime'))
+    with open(f'anime/{img_name}', 'rb') as f:
+        picture = discord.File(f)
+    await ctx.send(file=picture)
+
+
+def get_duck_image_url():    
+    url = 'https://random-d.uk/api/random'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+@bot.command('duck')
+async def duck(ctx):
+    '''По команде duck вызывает функцию get_duck_image_url'''
+    image_url = get_duck_image_url()
+    await ctx.send(image_url)
+
+def get_fox_image_url():    
+    url = 'https://randomfox.ca/floof/'
+    res = requests.get(url)
+    data = res.json()
+    image_url = data['image']
+    return image_url
+
+@bot.command('fox')
+async def fox(ctx):
+    image_url = get_fox_image_url()
+    await ctx.send(image_url)
+
+def get_dog_image_url():    
+    url = 'https://random.dog/woof.json'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+    if image_url.endswith(('.mp4', '.webm')):
+        return get_dog_image_url()  # Retry for an image URL
+    return image_url
+
+@bot.command('dog')
+async def dog(ctx):
+    image_url = get_dog_image_url()
+    await ctx.send(image_url)
+
+def get_tokio_image_url():    
+    url = 'https://kitsu.io/api/edge/anime?filter[text]=tokio'
+    res = requests.get(url)
+    data = res.json()
+    image_url = data['data'][0]['attributes']['posterImage']['original']
+    return image_url
+
+@bot.command('tokio')
+async def tokio(ctx):
+    image_url = get_tokio_image_url()
+    await ctx.send(image_url)
 
 
 
 
-bot.run("token")
+bot.run("TOKEN")
